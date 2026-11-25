@@ -94,8 +94,10 @@
   <div class="card">
     <label>Nombre del repartidor <span class="required-mark">*</span></label>
     <div class="nombre-wrap">
-      <select id="nombre">
+      <select id="nombre" onchange="actualizarMatricula(this.value)">
         <option value="">— Seleccioná tu nombre —</option>
+        <option>ETCHECOPAR SANUTTO, NATALIA</option>
+        <option>MIRANDA, MAURO</option>
         <option>ROMAÑUK GARCIA, MAURO</option>
         <option>SILVA, OMAR ISMAEL</option>
         <option>MACHIN GOMEZ, MARCELO</option>
@@ -115,7 +117,19 @@
   <!-- Matrícula -->
   <div class="card">
     <label>Matrícula <span class="required-mark">*</span></label>
-    <input type="text" id="matricula" class="matricula" placeholder="ABC 1234" maxlength="8" autocomplete="off" autocorrect="off" spellcheck="false">
+    <div class="nombre-wrap">
+      <select id="matricula" class="matricula">
+        <option value="">— Seleccioná la matrícula —</option>
+        <option>IAE4831</option>
+        <option>IAG4759</option>
+        <option>IAG4610</option>
+        <option>IAF9186</option>
+        <option>IAE4832</option>
+        <option>IAH7032</option>
+        <option>IAH7082</option>
+        <option>IAG8857</option>
+      </select>
+    </div>
   </div>
 
   <!-- KM -->
@@ -168,6 +182,11 @@
 // URL del Web App de Google Apps Script — completar después de publicar
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww5_9dM2XcsLWs8tnLychdUQbYr75RtcUwUS6LLNc9cEYnW15zKVMzinXyOfyQPqTTZQ/exec";
 
+// (sin función actualizarMatricula — matrícula se elige independiente)
+function actualizarMatricula(nombre) {
+  // reservado para asignación futura si cada repartidor tiene camioneta fija
+}
+
 // Combustible slider
 const slider = document.getElementById("combustible");
 const combVal = document.getElementById("combVal");
@@ -205,10 +224,7 @@ document.getElementById("fotoInput").addEventListener("change", function(e) {
   reader.readAsDataURL(file);
 });
 
-// Matrícula uppercase
-document.getElementById("matricula").addEventListener("input", function() {
-  this.value = this.value.toUpperCase();
-});
+// (matrícula ahora es select, no necesita uppercase listener)
 
 // Toast
 function showToast(msg, error) {
