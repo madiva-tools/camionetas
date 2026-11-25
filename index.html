@@ -236,7 +236,7 @@ async function enviar() {
   btn.textContent = "Enviando...";
 
   try {
-    const payload = { nombre, matricula, km, combustible, observaciones, fotoUrl: "(foto adjunta en base64)" };
+    const payload = { nombre, matricula, km, combustible, observaciones, foto: fotoBase64 };
 
     const res = await fetch(SCRIPT_URL, {
       method: "POST",
