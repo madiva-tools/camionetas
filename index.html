@@ -14,9 +14,33 @@
 body{font-family:system-ui,-apple-system,sans-serif;background:#F0F4F8;color:#1a1a2e;min-height:100vh;display:flex;flex-direction:column;padding-bottom:72px}
 
 /* HEADER */
-header{background:#1A5FA8;padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 10px rgba(26,95,168,.35)}
+header{background:#1A5FA8;padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30;box-shadow:0 2px 10px rgba(26,95,168,.35)}
 header h1{font-size:17px;font-weight:700;color:#fff}
 header p{font-size:11px;color:rgba(255,255,255,.65);margin-top:1px}
+.menu-btn{background:none;border:none;cursor:pointer;padding:4px;color:#fff;display:flex;align-items:center;margin-left:auto;border-radius:8px;transition:background .15s}
+.menu-btn:active{background:rgba(255,255,255,.15)}
+
+/* PANEL LATERAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.show{opacity:1;pointer-events:all}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:280px;background:#fff;z-index:50;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.18)}
+.drawer.show{transform:translateX(0)}
+.drawer-header{background:#1A5FA8;padding:20px 16px 16px;display:flex;align-items:center;gap:10px}
+.drawer-header h2{color:#fff;font-size:16px;font-weight:700}
+.drawer-header p{color:rgba(255,255,255,.65);font-size:11px;margin-top:1px}
+.drawer-close{margin-left:auto;background:none;border:none;color:#fff;cursor:pointer;padding:4px;border-radius:6px}
+.drawer-menu{padding:12px 8px;flex:1;overflow-y:auto}
+.drawer-item{display:flex;align-items:center;gap:12px;padding:14px 12px;border-radius:12px;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:background .15s;color:#1a1a2e}
+.drawer-item:active{background:#F0F4F8}
+.drawer-item.active-menu{background:#EBF3FF;color:#1A5FA8}
+.drawer-item svg{width:22px;height:22px;flex-shrink:0}
+.drawer-item-text{font-size:14px;font-weight:600}
+.drawer-item-sub{font-size:11px;color:#94a3b8;margin-top:1px}
+.drawer-divider{height:1px;background:#f0f4f8;margin:8px 12px}
+
+/* SECCIONES */
+.seccion{display:none;flex-direction:column;flex:1}
+.seccion.active{display:flex}
 
 /* TABS */
 .tabs{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;z-index:20;box-shadow:0 -2px 12px rgba(0,0,0,.08)}
@@ -109,6 +133,29 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
 </head>
 <body>
 
+<!-- OVERLAY + DRAWER -->
+<div class="overlay" id="overlay" onclick="cerrarMenu()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="rgba(255,255,255,.18)"/><path d="M5 21h22M7 21l2-9h14l2 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="23.5" r="2" fill="#fff"/><circle cx="21.5" cy="23.5" r="2" fill="#fff"/><rect x="12" y="10" width="8" height="2" rx="1" fill="#fff"/></svg>
+    <div><h2>MADIVA</h2><p>Herramientas operativas</p></div>
+    <button class="drawer-close" onclick="cerrarMenu()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-menu">
+    <button class="drawer-item active-menu" id="menu-camionetas" onclick="cambiarSeccion('camionetas')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      <div><div class="drawer-item-text">Control Camionetas</div><div class="drawer-item-sub">KM · Problemas · Historial</div></div>
+    </button>
+    <div class="drawer-divider"></div>
+    <button class="drawer-item" id="menu-reclamos" onclick="cambiarSeccion('reclamos')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <div><div class="drawer-item-text">Registro Reclamos</div><div class="drawer-item-sub">Envases · Presión · Servicio</div></div>
+    </button>
+  </div>
+</div>
+
 <header>
   <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
     <rect width="32" height="32" rx="8" fill="rgba(255,255,255,.18)"/>
@@ -117,8 +164,14 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
     <circle cx="21.5" cy="23.5" r="2" fill="#fff"/>
     <rect x="12" y="10" width="8" height="2" rx="1" fill="#fff"/>
   </svg>
-  <div><h1>Control Camionetas</h1><p>MADIVA S.R.L.</p></div>
+  <div><h1 id="header-titulo">Control Camionetas</h1><p>MADIVA S.R.L.</p></div>
+  <button class="menu-btn" onclick="abrirMenu()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
 </header>
+
+<!-- SECCIÓN CAMIONETAS -->
+<div class="seccion active" id="sec-camionetas">
 
 <!-- PAGE: KM -->
 <div class="page active" id="page-km">
@@ -320,6 +373,96 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
     <div class="hist-empty">Tocá ↻ para cargar el historial</div>
   </div>
 </div>
+
+</div><!-- fin sec-camionetas -->
+
+<!-- SECCIÓN RECLAMOS -->
+<div class="seccion" id="sec-reclamos">
+  <div style="padding:16px;max-width:480px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px">
+
+    <div class="card">
+      <label>Serie</label>
+      <input type="text" id="rc-serie" placeholder="Ej: A, B, C..." inputmode="text">
+    </div>
+
+    <div class="card">
+      <label>Número <span class="required">*</span></label>
+      <input type="number" id="rc-numero" placeholder="00000" inputmode="numeric">
+    </div>
+
+    <div class="card">
+      <label>Color</label>
+      <div class="sel-wrap">
+        <select id="rc-color">
+          <option value="Azul" selected>Azul</option>
+          <option value="Gris">Gris</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>Tipo <span class="required">*</span></label>
+      <div class="sel-wrap">
+        <select id="rc-tipo">
+          <option value="">— Seleccioná el tipo —</option>
+          <option value="Garrafa 13 kg">Garrafa 13 kg</option>
+          <option value="Fase Líquida - Propano">Fase Líquida - Propano</option>
+          <option value="Tubo 45 común">Tubo 45 común</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>Tara <span class="required">*</span></label>
+      <input type="number" id="rc-tara" placeholder="kg" inputmode="decimal" step="0.1">
+    </div>
+
+    <div class="card">
+      <label>Peso total <span class="opt">(opcional)</span></label>
+      <input type="number" id="rc-peso" placeholder="kg" inputmode="decimal" step="0.1">
+    </div>
+
+    <div class="card">
+      <label>Repartidor <span class="opt">(opcional)</span></label>
+      <div class="sel-wrap">
+        <select id="rc-repartidor">
+          <option value="">— Seleccioná —</option>
+          <option>ETCHECOPAR SANUTTO, NATALIA</option>
+          <option>MIRANDA, MAURO</option>
+          <option>ROMAÑUK GARCIA, MAURO</option>
+          <option>SILVA, OMAR ISMAEL</option>
+          <option>MACHIN GOMEZ, MARCELO</option>
+          <option>OSORES MARSICO, GERARDO</option>
+          <option>ALVAREZ CAMACHO, MARIO</option>
+          <option>RUIZ DIAZ, DIEGO</option>
+          <option>ARCE SARACHO, ROBERT</option>
+          <option>PINTOS HIDALGO, JENRY</option>
+          <option>SOLLA FUTTEN, WALTER</option>
+          <option>FERRERO MALGOR, FRANCO</option>
+          <option>DE LOS SANTOS, CARLOS</option>
+          <option>CARNEIRO RODRIGUEZ, PABLO</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>Dirección <span class="required">*</span></label>
+      <input type="text" id="rc-direccion" placeholder="Calle y número">
+    </div>
+
+    <div class="card">
+      <label>Teléfono <span class="opt">(opcional)</span></label>
+      <input type="tel" id="rc-telefono" placeholder="Ej: 099 123 456" inputmode="tel">
+    </div>
+
+    <button class="btn" id="rc-btn" onclick="enviarReclamo()" style="background:#1a9e5c">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+      Registrar reclamo
+    </button>
+
+  </div>
+</div><!-- fin sec-reclamos -->
 
 <nav class="tabs">
   <button class="tab active" onclick="showPage('km',this)">
@@ -556,6 +699,73 @@ function filtrar() {
   }).join('');
 }
 </script>
+
+// MENÚ LATERAL
+function abrirMenu() {
+  document.getElementById('drawer').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+}
+function cerrarMenu() {
+  document.getElementById('drawer').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
+function cambiarSeccion(id) {
+  cerrarMenu();
+  document.querySelectorAll('.seccion').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  document.querySelectorAll('.drawer-item').forEach(i => i.classList.remove('active-menu'));
+  document.getElementById('menu-' + id).classList.add('active-menu');
+  document.getElementById('header-titulo').textContent =
+    id === 'camionetas' ? 'Control Camionetas' : 'Registro Reclamos';
+  // ocultar/mostrar tabs
+  document.querySelector('.tabs').style.display = id === 'camionetas' ? 'flex' : 'none';
+  document.body.style.paddingBottom = id === 'camionetas' ? '72px' : '16px';
+}
+
+// RECLAMO
+async function enviarReclamo() {
+  const numero    = document.getElementById('rc-numero').value.trim();
+  const tipo      = document.getElementById('rc-tipo').value;
+  const tara      = document.getElementById('rc-tara').value.trim();
+  const direccion = document.getElementById('rc-direccion').value.trim();
+
+  if (!numero)    { toast('⚠️ Ingresá el número', true); return; }
+  if (!tipo)      { toast('⚠️ Seleccioná el tipo', true); return; }
+  if (!tara)      { toast('⚠️ Ingresá la tara', true); return; }
+  if (!direccion) { toast('⚠️ Ingresá la dirección', true); return; }
+
+  const btn = document.getElementById('rc-btn');
+  btn.classList.add('loading'); btn.textContent = 'Enviando...';
+
+  const payload = {
+    tipo: 'reclamo',
+    serie:      document.getElementById('rc-serie').value.trim(),
+    numero,
+    color:      document.getElementById('rc-color').value,
+    tipoEnvase: tipo,
+    tara,
+    pesoTotal:  document.getElementById('rc-peso').value.trim(),
+    repartidor: document.getElementById('rc-repartidor').value,
+    direccion,
+    telefono:   document.getElementById('rc-telefono').value.trim()
+  };
+
+  try {
+    const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const d = await res.json();
+    if (d.ok) {
+      toast('✅ Reclamo registrado');
+      ['rc-serie','rc-numero','rc-tara','rc-peso','rc-repartidor','rc-direccion','rc-telefono'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('rc-color').value = 'Azul';
+      document.getElementById('rc-tipo').value = '';
+    } else { toast('❌ Error al enviar', true); }
+  } catch(e) { toast('❌ Sin conexión', true); }
+
+  btn.classList.remove('loading');
+  btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg> Registrar reclamo';
+}
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
 </body>
