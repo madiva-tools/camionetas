@@ -290,41 +290,54 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
 
 <!-- PAGE: HISTORIAL -->
 <div class="page" id="page-hist">
-  <div class="card">
-    <div class="filtros">
-      <div class="sel-wrap" style="flex:1">
-        <select id="f-chofer" onchange="filtrar()">
-          <option value="">Todos los choferes</option>
-          <option>ETCHECOPAR SANUTTO, NATALIA</option>
-          <option>MIRANDA, MAURO</option>
-          <option>ROMAÑUK GARCIA, MAURO</option>
-          <option>SILVA, OMAR ISMAEL</option>
-          <option>MACHIN GOMEZ, MARCELO</option>
-          <option>OSORES MARSICO, GERARDO</option>
-          <option>ALVAREZ CAMACHO, MARIO</option>
-          <option>RUIZ DIAZ, DIEGO</option>
-          <option>ARCE SARACHO, ROBERT</option>
-          <option>PINTOS HIDALGO, JENRY</option>
-          <option>SOLLA FUTTEN, WALTER</option>
-          <option>FERRERO MALGOR, FRANCO</option>
-          <option>DE LOS SANTOS, CARLOS</option>
-          <option>CARNEIRO RODRIGUEZ, PABLO</option>
-        </select>
+
+  <!-- Selector de tipo de historial -->
+  <div style="padding:12px 16px 0">
+    <div style="display:flex;gap:8px;background:#e8edf2;border-radius:12px;padding:4px">
+      <button id="htab-km" onclick="cambiarHistTipo('km')" style="flex:1;padding:8px 4px;border:none;border-radius:9px;font-size:13px;font-weight:700;background:#2563eb;color:#fff;cursor:pointer;transition:all .2s">🚛 KM</button>
+      <button id="htab-prob" onclick="cambiarHistTipo('prob')" style="flex:1;padding:8px 4px;border:none;border-radius:9px;font-size:13px;font-weight:700;background:transparent;color:#64748b;cursor:pointer;transition:all .2s">⚠️ Problemas</button>
+      <button id="htab-rec" onclick="cambiarHistTipo('rec')" style="flex:1;padding:8px 4px;border:none;border-radius:9px;font-size:13px;font-weight:700;background:transparent;color:#64748b;cursor:pointer;transition:all .2s">📋 Reclamos</button>
+    </div>
+  </div>
+
+  <!-- Filtros KM/Prob -->
+  <div id="hist-filtros-camion" style="padding:8px 16px 0">
+    <div class="card" style="margin-bottom:0">
+      <div class="filtros">
+        <div class="sel-wrap" style="flex:1">
+          <select id="f-chofer" onchange="filtrar()">
+            <option value="">Todos los choferes</option>
+            <option>ETCHECOPAR SANUTTO, NATALIA</option>
+            <option>MIRANDA, MAURO</option>
+            <option>ROMAÑUK GARCIA, MAURO</option>
+            <option>SILVA, OMAR ISMAEL</option>
+            <option>MACHIN GOMEZ, MARCELO</option>
+            <option>OSORES MARSICO, GERARDO</option>
+            <option>ALVAREZ CAMACHO, MARIO</option>
+            <option>RUIZ DIAZ, DIEGO</option>
+            <option>ARCE SARACHO, ROBERT</option>
+            <option>PINTOS HIDALGO, JENRY</option>
+            <option>SOLLA FUTTEN, WALTER</option>
+            <option>FERRERO MALGOR, FRANCO</option>
+            <option>DE LOS SANTOS, CARLOS</option>
+            <option>CARNEIRO RODRIGUEZ, PABLO</option>
+          </select>
+        </div>
+        <div class="sel-wrap" style="flex:1">
+          <select id="f-mat" onchange="filtrar()">
+            <option value="">Todas las matrículas</option>
+            <option>IAE4831</option>
+            <option>IAG4759</option>
+            <option>IAG4610</option>
+            <option>IAF9186</option>
+            <option>IAE4832</option>
+            <option>IAH7032</option>
+            <option>IAH7082</option>
+            <option>IAG8857</option>
+          </select>
+        </div>
+        <button class="btn-refresh" onclick="cargarHistorial()">↻</button>
       </div>
-      <div class="sel-wrap" style="flex:1">
-        <select id="f-mat" onchange="filtrar()">
-          <option value="">Todas las matrículas</option>
-          <option>IAE4831</option>
-          <option>IAG4759</option>
-          <option>IAG4610</option>
-          <option>IAF9186</option>
-          <option>IAE4832</option>
-          <option>IAH7032</option>
-          <option>IAH7082</option>
-          <option>IAG8857</option>
-        </select>
-      </div>
-      <button class="btn-refresh" onclick="cargarHistorial()">↻</button>
     </div>
   </div>
 
@@ -337,53 +350,72 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
 
 <!-- SECCIÓN RECLAMOS -->
 <div class="seccion" id="sec-reclamos">
+  <!-- Sub-vistas: formulario e historial de reclamos -->
+  <div id="rc-vista-form">
   <div style="padding:16px;max-width:480px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px">
 
     <div class="card">
-      <label>Serie</label>
-      <input type="text" id="rc-serie" placeholder="Ej: A, B, C..." inputmode="text">
+      <label>Dirección <span class="required">*</span></label>
+      <input type="text" id="rc-direccion" placeholder="Calle y número">
     </div>
 
+    <!-- Serie y Número en la misma línea -->
     <div class="card">
-      <label>Número <span class="required">*</span></label>
-      <input type="number" id="rc-numero" placeholder="00000" inputmode="numeric">
+      <div style="display:flex;gap:12px;align-items:flex-end">
+        <div style="flex:1">
+          <label>Serie</label>
+          <input type="text" id="rc-serie" placeholder="Ej: A" inputmode="text" style="margin-top:4px">
+        </div>
+        <div style="flex:2">
+          <label>Número <span class="required">*</span></label>
+          <input type="number" id="rc-numero" placeholder="00000" inputmode="numeric" style="margin-top:4px">
+        </div>
+      </div>
     </div>
 
+    <!-- Color y Tipo en la misma línea -->
     <div class="card">
-      <label>Color</label>
-      <div class="sel-wrap">
-        <select id="rc-color">
-          <option value="Azul" selected>Azul</option>
-          <option value="Gris">Gris</option>
-          <option value="Otro">Otro</option>
-        </select>
+      <div style="display:flex;gap:12px;align-items:flex-end">
+        <div style="flex:1">
+          <label>Color</label>
+          <div class="sel-wrap" style="margin-top:4px">
+            <select id="rc-color">
+              <option value="Azul" selected>Azul</option>
+              <option value="Gris">Gris</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+        <div style="flex:2">
+          <label>Tipo <span class="required">*</span></label>
+          <div class="sel-wrap" style="margin-top:4px">
+            <select id="rc-tipo">
+              <option value="">— Tipo —</option>
+              <option value="Garrafa 13 kg">Garrafa 13 kg</option>
+              <option value="Fase Líquida - Propano">Fase Líquida - Propano</option>
+              <option value="Tubo 45 común">Tubo 45 común</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tara y Peso Total -->
+    <div class="card">
+      <div style="display:flex;gap:12px">
+        <div style="flex:1">
+          <label>Tara <span class="required">*</span></label>
+          <input type="number" id="rc-tara" placeholder="kg" inputmode="decimal" step="0.01" style="margin-top:4px">
+        </div>
+        <div style="flex:1">
+          <label>Peso total <span class="opt">(opcional)</span></label>
+          <input type="number" id="rc-peso" placeholder="kg" inputmode="decimal" step="0.01" style="margin-top:4px">
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <label>Tipo <span class="required">*</span></label>
-      <div class="sel-wrap">
-        <select id="rc-tipo">
-          <option value="">— Seleccioná el tipo —</option>
-          <option value="Garrafa 13 kg">Garrafa 13 kg</option>
-          <option value="Fase Líquida - Propano">Fase Líquida - Propano</option>
-          <option value="Tubo 45 común">Tubo 45 común</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="card">
-      <label>Tara <span class="required">*</span></label>
-      <input type="number" id="rc-tara" placeholder="kg" inputmode="decimal" step="0.1">
-    </div>
-
-    <div class="card">
-      <label>Peso total <span class="opt">(opcional)</span></label>
-      <input type="number" id="rc-peso" placeholder="kg" inputmode="decimal" step="0.1">
-    </div>
-
-    <div class="card">
-      <label>Repartidor <span class="opt">(opcional)</span></label>
+      <label>Repartidor <span class="required">*</span></label>
       <div class="sel-wrap">
         <select id="rc-repartidor">
           <option value="">— Seleccioná —</option>
@@ -406,13 +438,18 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
     </div>
 
     <div class="card">
-      <label>Dirección <span class="required">*</span></label>
-      <input type="text" id="rc-direccion" placeholder="Calle y número">
-    </div>
-
-    <div class="card">
       <label>Teléfono <span class="opt">(opcional)</span></label>
       <input type="tel" id="rc-telefono" placeholder="Ej: 099 123 456" inputmode="tel">
+    </div>
+
+    <!-- Foto del envase -->
+    <div class="card">
+      <label>Foto del envase <span class="opt">(opcional)</span></label>
+      <div class="foto-slot" id="rc-foto-slot" style="margin-top:8px" onclick="document.getElementById('rc-foto-input').click()">
+        <input type="file" id="rc-foto-input" accept="image/*" capture="environment" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <p>Tocá para sacar<br>foto del envase</p>
+      </div>
     </div>
 
     <button class="btn" id="rc-btn" onclick="enviarReclamo()" style="background:#1a9e5c">
@@ -420,7 +457,24 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
       Registrar reclamo
     </button>
 
+    <button class="btn" onclick="mostrarHistorialReclamos()" style="background:#2563eb;margin-top:0">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Ver historial de reclamos
+    </button>
+
   </div>
+  </div><!-- fin rc-vista-form -->
+
+  <!-- HISTORIAL DE RECLAMOS -->
+  <div id="rc-vista-hist" style="display:none;padding:16px;max-width:480px;width:100%;margin:0 auto">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <button onclick="document.getElementById('rc-vista-hist').style.display='none';document.getElementById('rc-vista-form').style.display=''" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer">← Volver</button>
+      <span style="font-weight:700;font-size:16px;color:#1e3a5f">Historial de reclamos</span>
+      <button onclick="cargarHistorialReclamos()" style="margin-left:auto;background:#f0f4f8;border:none;border-radius:8px;padding:8px 12px;font-size:18px;cursor:pointer">↻</button>
+    </div>
+    <div id="rc-hist-list"><div class="hist-empty">Tocá ↻ para cargar</div></div>
+  </div>
+
 </div><!-- fin sec-reclamos -->
 
 <nav class="tabs">
@@ -452,7 +506,9 @@ function showPage(id, btn) {
   document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.classList.remove('active-prob'); });
   document.getElementById('page-' + id).classList.add('active');
   btn.classList.add(id === 'prob' ? 'active-prob' : 'active');
-  if (id === 'hist') cargarHistorial();
+  if (id === 'hist') {
+    if (todosRegistros.length) filtrar(); else cargarHistorial();
+  }
 }
 
 // Toast
@@ -590,6 +646,26 @@ async function enviarProblema() {
 
 // HISTORIAL
 let todosRegistros = [];
+let histTipo = 'km'; // 'km', 'prob', 'rec'
+
+function cambiarHistTipo(tipo) {
+  histTipo = tipo;
+  // Actualizar estilos tabs
+  ['km','prob','rec'].forEach(t => {
+    const btn = document.getElementById('htab-' + t);
+    btn.style.background = t === tipo ? '#2563eb' : 'transparent';
+    btn.style.color = t === tipo ? '#fff' : '#64748b';
+  });
+  // Mostrar/ocultar filtros de camión
+  const filtrosCamion = document.getElementById('hist-filtros-camion');
+  filtrosCamion.style.display = (tipo === 'km' || tipo === 'prob') ? '' : 'none';
+
+  if (todosRegistros.length) {
+    filtrar();
+  } else {
+    cargarHistorial();
+  }
+}
 
 async function cargarHistorial() {
   document.getElementById('hist-list').innerHTML = '<div class="hist-empty">Cargando...</div>';
@@ -608,54 +684,118 @@ async function cargarHistorial() {
 }
 
 function filtrar() {
+  const el = document.getElementById('hist-list');
+
+  if (histTipo === 'rec') {
+    // Historial de reclamos
+    const listaRec = todosRegistros.filter(r => r.tipo === 'reclamo');
+    if (!listaRec.length) { el.innerHTML = '<div class="hist-empty">Sin reclamos registrados</div>'; return; }
+    el.innerHTML = listaRec.slice(0, 50).map(r => `
+      <div class="hist-item" id="rec-row-${r.fila}" style="border-left:4px solid #1a9e5c">
+        <div class="hist-meta">
+          <span class="hist-tipo" style="background:#1a9e5c20;color:#1a9e5c">📋 Reclamo</span>
+          <span class="hist-fecha">${r.fecha} ${r.hora}</span>
+        </div>
+        <div class="hist-nombre" style="font-size:14px">${r.direccion}</div>
+        <div class="hist-detalle" style="flex-wrap:wrap;gap:6px">
+          ${r.repartidor ? `<span>👤 ${r.repartidor.split(',')[0]}</span>` : ''}
+          <span>🏷️ ${r.color} · ${r.tipoEnvase}</span>
+          ${r.telefono ? `<span>📞 ${r.telefono}</span>` : ''}
+        </div>
+        <!-- campos editables -->
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid #e8edf2">
+          <div style="font-size:12px;color:#64748b;font-weight:600;margin-bottom:6px">✏️ Editar:</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div style="flex:0 0 70px">
+              <div style="font-size:11px;color:#94a3b8">Serie</div>
+              <input type="text" id="edit-serie-${r.fila}" value="${r.serie}" style="width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;font-size:13px">
+            </div>
+            <div style="flex:0 0 90px">
+              <div style="font-size:11px;color:#94a3b8">Número</div>
+              <input type="text" id="edit-nro-${r.fila}" value="${r.numero}" style="width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;font-size:13px">
+            </div>
+            <div style="flex:0 0 90px">
+              <div style="font-size:11px;color:#94a3b8">Peso total (kg)</div>
+              <input type="number" id="edit-peso-${r.fila}" value="${r.pesoTotal}" step="0.01" style="width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;font-size:13px">
+            </div>
+            <button onclick="guardarEdicionReclamo(${r.fila})" style="margin-top:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer">Guardar</button>
+          </div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:4px">Tara: ${r.tara} kg${r.pesoTotal ? ' · Peso total: ' + r.pesoTotal + ' kg' : ''}</div>
+        </div>
+      </div>`).join('');
+    return;
+  }
+
+  // KM o Problemas
   const chofer = document.getElementById('f-chofer').value;
   const mat = document.getElementById('f-mat').value;
-  let lista = todosRegistros;
+  let lista = todosRegistros.filter(r => histTipo === 'km' ? r.tipo === 'km' : r.tipo === 'problema');
   if (chofer) lista = lista.filter(r => r.nombre === chofer);
   if (mat) lista = lista.filter(r => r.matricula === mat);
 
-  const el = document.getElementById('hist-list');
   if (!lista.length) { el.innerHTML = '<div class="hist-empty">Sin registros para ese filtro</div>'; return; }
 
-  // Calcular km recorridos por matrícula (lista ya viene ordenada desc,
-  // así que el "anterior" para cada registro es el siguiente en la lista con misma matrícula)
-  const ultimoKmPorMat = {};
-  // Recorrer de más viejo a más nuevo para construir el mapa de diferencias
-  const conDiff = lista.map((r, idx) => ({ ...r, _idx: idx }));
-  // Para cada registro km, buscar el próximo más viejo con la misma matrícula
-  conDiff.forEach(r => {
-    r._diff = null;
-    if (r.tipo === 'km' && r.km) {
-      // buscar hacia abajo (más viejo) en la lista completa
-      const kmActual = parseInt(r.km);
-      for (let i = r._idx + 1; i < lista.length; i++) {
-        if (lista[i].tipo === 'km' && lista[i].matricula === r.matricula && lista[i].km) {
-          const kmAnterior = parseInt(lista[i].km);
-          if (kmActual > kmAnterior) r._diff = kmActual - kmAnterior;
-          break;
+  if (histTipo === 'km') {
+    // Calcular diferencia de km
+    const conDiff = lista.map((r, idx) => ({ ...r, _idx: idx }));
+    conDiff.forEach(r => {
+      r._diff = null;
+      if (r.km) {
+        const kmActual = parseInt(r.km);
+        for (let i = r._idx + 1; i < lista.length; i++) {
+          if (lista[i].matricula === r.matricula && lista[i].km) {
+            const kmAnterior = parseInt(lista[i].km);
+            if (kmActual > kmAnterior) r._diff = kmActual - kmAnterior;
+            break;
+          }
         }
       }
-    }
-  });
+    });
+    el.innerHTML = conDiff.slice(0, 50).map(r => {
+      const diffHtml = r._diff !== null
+        ? `<span style="color:#1a9e5c;font-weight:700">↗ +${r._diff.toLocaleString('es-UY')} km</span>` : '';
+      return `<div class="hist-item">
+        <div class="hist-meta">
+          <span class="hist-tipo">🚛 KM</span>
+          <span class="hist-fecha">${r.fecha} ${r.hora}</span>
+        </div>
+        <div class="hist-nombre">${r.nombre}</div>
+        <div class="hist-detalle">
+          <span>🚗 ${r.matricula}</span>
+          <span>📍 ${parseInt(r.km).toLocaleString('es-UY')} km</span>
+          <span>⛽ ${r.combustible}%</span>${diffHtml}
+        </div>
+        ${r.observaciones ? `<div class="hist-obs">${r.observaciones}</div>` : ''}
+      </div>`;
+    }).join('');
+  } else {
+    // Problemas
+    el.innerHTML = lista.slice(0, 50).map(r => `
+      <div class="hist-item problema">
+        <div class="hist-meta">
+          <span class="hist-tipo p">⚠️ Problema</span>
+          <span class="hist-fecha">${r.fecha} ${r.hora}</span>
+        </div>
+        <div class="hist-nombre">${r.nombre}</div>
+        <div class="hist-detalle"><span>🚗 ${r.matricula}</span></div>
+        ${r.observaciones ? `<div class="hist-obs">${r.observaciones}</div>` : ''}
+      </div>`).join('');
+  }
+}
 
-  el.innerHTML = conDiff.slice(0, 50).map(r => {
-    const esProb = r.tipo === 'problema';
-    const diffHtml = (!esProb && r._diff !== null)
-      ? `<span style="color:#1a9e5c;font-weight:700">↗ +${r._diff.toLocaleString('es-UY')} km</span>`
-      : '';
-    return `<div class="hist-item ${esProb ? 'problema' : ''}">
-      <div class="hist-meta">
-        <span class="hist-tipo ${esProb ? 'p' : ''}">${esProb ? '⚠️ Problema' : '🚛 KM'}</span>
-        <span class="hist-fecha">${r.fecha} ${r.hora}</span>
-      </div>
-      <div class="hist-nombre">${r.nombre}</div>
-      <div class="hist-detalle">
-        <span>🚗 ${r.matricula}</span>
-        ${!esProb ? `<span>📍 ${parseInt(r.km).toLocaleString('es-UY')} km</span><span>⛽ ${r.combustible}%</span>${diffHtml}` : ''}
-      </div>
-      ${r.observaciones ? `<div class="hist-obs">${r.observaciones}</div>` : ''}
-    </div>`;
-  }).join('');
+async function guardarEdicionReclamo(fila) {
+  const serie    = document.getElementById('edit-serie-' + fila).value.trim();
+  const numero   = document.getElementById('edit-nro-' + fila).value.trim();
+  const pesoTotal = document.getElementById('edit-peso-' + fila).value.trim();
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ tipo: 'editar_reclamo', fila, serie, numero, pesoTotal })
+    });
+    const d = await res.json();
+    if (d.ok) { toast('✅ Reclamo actualizado'); }
+    else { toast('❌ Error al guardar', true); }
+  } catch(e) { toast('❌ Sin conexión', true); }
 }
 
 // NAVEGACIÓN
@@ -678,17 +818,93 @@ function cambiarSeccion(id) {
   }
 }
 
-// RECLAMO
-async function enviarReclamo() {
-  const numero    = document.getElementById('rc-numero').value.trim();
-  const tipo      = document.getElementById('rc-tipo').value;
-  const tara      = document.getElementById('rc-tara').value.trim();
-  const direccion = document.getElementById('rc-direccion').value.trim();
+// FOTO RECLAMO
+let fotoReclamo = null;
+document.getElementById('rc-foto-input').addEventListener('change', function(e) {
+  comprimirFoto(e.target.files[0], 800, function(b64) {
+    fotoReclamo = b64;
+    const slot = document.getElementById('rc-foto-slot');
+    slot.innerHTML = `<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:10px"><span class="foto-badge">📷</span>`;
+  });
+});
 
-  if (!numero)    { toast('⚠️ Ingresá el número', true); return; }
-  if (!tipo)      { toast('⚠️ Seleccioná el tipo', true); return; }
-  if (!tara)      { toast('⚠️ Ingresá la tara', true); return; }
-  if (!direccion) { toast('⚠️ Ingresá la dirección', true); return; }
+// RECLAMO — HISTORIAL (desde sección reclamos)
+function mostrarHistorialReclamos() {
+  document.getElementById('rc-vista-form').style.display = 'none';
+  document.getElementById('rc-vista-hist').style.display = '';
+  cargarHistorialReclamos();
+}
+
+async function cargarHistorialReclamos() {
+  document.getElementById('rc-hist-list').innerHTML = '<div class="hist-empty">Cargando...</div>';
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=historial');
+    const d = await res.json();
+    if (!d.ok) throw new Error('error');
+    const listaRec = d.data.filter(r => r.tipo === 'reclamo');
+    if (!listaRec.length) { document.getElementById('rc-hist-list').innerHTML = '<div class="hist-empty">Sin reclamos registrados</div>'; return; }
+    document.getElementById('rc-hist-list').innerHTML = listaRec.slice(0, 50).map(r => `
+      <div class="hist-item" style="border-left:4px solid #1a9e5c">
+        <div class="hist-meta">
+          <span class="hist-tipo" style="background:#1a9e5c20;color:#1a9e5c">📋 Reclamo</span>
+          <span class="hist-fecha">${r.fecha} ${r.hora}</span>
+        </div>
+        <div class="hist-nombre" style="font-size:14px">${r.direccion}</div>
+        <div class="hist-detalle" style="flex-wrap:wrap;gap:6px">
+          ${r.repartidor ? `<span>👤 ${r.repartidor.split(',')[0]}</span>` : ''}
+          <span>🏷️ ${r.color} · ${r.tipoEnvase}</span>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid #e8edf2">
+          <div style="font-size:12px;color:#64748b;font-weight:600;margin-bottom:6px">✏️ Editar:</div>
+          <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+            <div style="flex:0 0 70px">
+              <div style="font-size:11px;color:#94a3b8">Serie</div>
+              <input type="text" id="rh-serie-${r.fila}" value="${r.serie}" style="width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;font-size:13px">
+            </div>
+            <div style="flex:0 0 90px">
+              <div style="font-size:11px;color:#94a3b8">Número</div>
+              <input type="text" id="rh-nro-${r.fila}" value="${r.numero}" style="width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;font-size:13px">
+            </div>
+            <div style="flex:0 0 90px">
+              <div style="font-size:11px;color:#94a3b8">Peso total (kg)</div>
+              <input type="number" id="rh-peso-${r.fila}" value="${r.pesoTotal}" step="0.01" style="width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;font-size:13px">
+            </div>
+            <button onclick="guardarEdicionReclamoH(${r.fila})" style="margin-top:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer">Guardar</button>
+          </div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:4px">Tara: ${r.tara} kg${r.pesoTotal ? ' · Peso total: ' + r.pesoTotal + ' kg' : ''}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) { document.getElementById('rc-hist-list').innerHTML = '<div class="hist-empty">Sin conexión</div>'; }
+}
+
+async function guardarEdicionReclamoH(fila) {
+  const serie     = document.getElementById('rh-serie-' + fila).value.trim();
+  const numero    = document.getElementById('rh-nro-' + fila).value.trim();
+  const pesoTotal = document.getElementById('rh-peso-' + fila).value.trim();
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ tipo: 'editar_reclamo', fila, serie, numero, pesoTotal })
+    });
+    const d = await res.json();
+    if (d.ok) { toast('✅ Reclamo actualizado'); }
+    else { toast('❌ Error al guardar', true); }
+  } catch(e) { toast('❌ Sin conexión', true); }
+}
+
+// RECLAMO — ENVÍO
+async function enviarReclamo() {
+  const numero      = document.getElementById('rc-numero').value.trim();
+  const tipo        = document.getElementById('rc-tipo').value;
+  const tara        = document.getElementById('rc-tara').value.trim();
+  const direccion   = document.getElementById('rc-direccion').value.trim();
+  const repartidor  = document.getElementById('rc-repartidor').value;
+
+  if (!direccion)   { toast('⚠️ Ingresá la dirección', true); return; }
+  if (!numero)      { toast('⚠️ Ingresá el número', true); return; }
+  if (!tipo)        { toast('⚠️ Seleccioná el tipo', true); return; }
+  if (!tara)        { toast('⚠️ Ingresá la tara', true); return; }
+  if (!repartidor)  { toast('⚠️ Seleccioná el repartidor', true); return; }
 
   const btn = document.getElementById('rc-btn');
   btn.classList.add('loading'); btn.textContent = 'Enviando...';
@@ -701,9 +917,10 @@ async function enviarReclamo() {
     tipoEnvase: tipo,
     tara,
     pesoTotal:  document.getElementById('rc-peso').value.trim(),
-    repartidor: document.getElementById('rc-repartidor').value,
+    repartidor,
     direccion,
-    telefono:   document.getElementById('rc-telefono').value.trim()
+    telefono:   document.getElementById('rc-telefono').value.trim(),
+    foto:       fotoReclamo
   };
 
   try {
@@ -711,11 +928,17 @@ async function enviarReclamo() {
     const d = await res.json();
     if (d.ok) {
       toast('✅ Reclamo registrado');
-      ['rc-serie','rc-numero','rc-tara','rc-peso','rc-repartidor','rc-direccion','rc-telefono'].forEach(id => {
+      ['rc-serie','rc-numero','rc-tara','rc-peso','rc-direccion','rc-telefono'].forEach(id => {
         document.getElementById(id).value = '';
       });
       document.getElementById('rc-color').value = 'Azul';
       document.getElementById('rc-tipo').value = '';
+      document.getElementById('rc-repartidor').value = '';
+      fotoReclamo = null;
+      document.getElementById('rc-foto-slot').innerHTML = `<input type="file" id="rc-foto-input" accept="image/*" capture="environment" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <p>Tocá para sacar<br>foto del envase</p>`;
+      document.getElementById('rc-foto-input').addEventListener('change', function(e){ comprimirFoto(e.target.files[0],800,function(b64){fotoReclamo=b64;const s=document.getElementById('rc-foto-slot');s.innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:10px"><span class="foto-badge">📷</span>`;}); });
     } else { toast('❌ Error al enviar', true); }
   } catch(e) { toast('❌ Sin conexión', true); }
 
