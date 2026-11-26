@@ -507,8 +507,32 @@ function filtrar() {
   const el = document.getElementById('hist-list');
   if (!lista.length) { el.innerHTML = '<div class="hist-empty">Sin registros para ese filtro</div>'; return; }
 
-  el.innerHTML = lista.slice(0,50).map(r => {
+  // Calcular km recorridos por matrícula (lista ya viene ordenada desc,
+  // así que el "anterior" para cada registro es el siguiente en la lista con misma matrícula)
+  const ultimoKmPorMat = {};
+  // Recorrer de más viejo a más nuevo para construir el mapa de diferencias
+  const conDiff = lista.map((r, idx) => ({ ...r, _idx: idx }));
+  // Para cada registro km, buscar el próximo más viejo con la misma matrícula
+  conDiff.forEach(r => {
+    r._diff = null;
+    if (r.tipo === 'km' && r.km) {
+      // buscar hacia abajo (más viejo) en la lista completa
+      const kmActual = parseInt(r.km);
+      for (let i = r._idx + 1; i < lista.length; i++) {
+        if (lista[i].tipo === 'km' && lista[i].matricula === r.matricula && lista[i].km) {
+          const kmAnterior = parseInt(lista[i].km);
+          if (kmActual > kmAnterior) r._diff = kmActual - kmAnterior;
+          break;
+        }
+      }
+    }
+  });
+
+  el.innerHTML = conDiff.slice(0, 50).map(r => {
     const esProb = r.tipo === 'problema';
+    const diffHtml = (!esProb && r._diff !== null)
+      ? `<span style="color:#1a9e5c;font-weight:700">↗ +${r._diff.toLocaleString('es-UY')} km</span>`
+      : '';
     return `<div class="hist-item ${esProb ? 'problema' : ''}">
       <div class="hist-meta">
         <span class="hist-tipo ${esProb ? 'p' : ''}">${esProb ? '⚠️ Problema' : '🚛 KM'}</span>
@@ -517,7 +541,7 @@ function filtrar() {
       <div class="hist-nombre">${r.nombre}</div>
       <div class="hist-detalle">
         <span>🚗 ${r.matricula}</span>
-        ${!esProb ? `<span>📍 ${r.km} km</span><span>⛽ ${r.combustible}%</span>` : ''}
+        ${!esProb ? `<span>📍 ${parseInt(r.km).toLocaleString('es-UY')} km</span><span>⛽ ${r.combustible}%</span>${diffHtml}` : ''}
       </div>
       ${r.observaciones ? `<div class="hist-obs">${r.observaciones}</div>` : ''}
     </div>`;
