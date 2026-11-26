@@ -97,8 +97,8 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
 .hist-empty{text-align:center;padding:40px 20px;color:#94a3b8;font-size:14px}
 
 /* Toast */
-.toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(60px);background:#1a9e5c;color:#fff;padding:12px 24px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .3s;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.18);white-space:nowrap}
-.toast.show{transform:translateX(-50%) translateY(0)}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:#1a9e5c;color:#fff;padding:12px 24px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:opacity .3s,transform .3s;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.18);white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.err{background:#d9534f}
 </style>
 </head>
@@ -349,8 +349,11 @@ function showPage(id, btn) {
 function toast(msg, err) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.className = 'toast' + (err ? ' err' : '') + ' show';
-  setTimeout(() => t.className = 'toast' + (err ? ' err' : ''), 3000);
+  t.className = 'toast' + (err ? ' err' : '');
+  void t.offsetWidth; // fuerza reflow para que la animación arranque
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.classList.remove('show'); }, 3000);
 }
 
 // Combustible slider
