@@ -29,11 +29,13 @@ header p{font-size:11px;color:rgba(255,255,255,.65);margin-top:1px}
 .tab{flex:1;padding:10px 4px 13px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:none;color:#94a3b8;font-size:10px;font-weight:600;transition:color .15s}
 .tab.active{color:#1A5FA8}
 .tab.active-prob{color:#d9534f}
-.tab svg{width:22px;height:22px}
+.tab.active-rec{color:#1a9e5c}
+.tab svg{width:20px;height:20px}
 .tab-icon{position:relative;display:flex;align-items:center;justify-content:center}
 .tab-dot{width:28px;height:4px;border-radius:2px;margin-bottom:1px;background:transparent;transition:background .2s}
 .tab.active .tab-dot-km{background:#1a9e5c}
 .tab.active-prob .tab-dot-prob{background:#d9534f}
+.tab.active-rec .tab-dot{background:#1a9e5c}
 .tab.active .tab-dot-hist{background:#1A5FA8}
 
 /* PAGES */
@@ -124,9 +126,6 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
     <rect x="12" y="10" width="8" height="2" rx="1" fill="#fff"/>
   </svg>
   <div><h1 id="header-titulo">Control Camionetas</h1><p>MADIVA S.R.L.</p></div>
-  <button class="nav-btn" id="nav-btn" onclick="cambiarSeccion('reclamos')">
-    📋 Reclamos
-  </button>
 </header>
 
 <!-- SECCIÓN CAMIONETAS -->
@@ -346,10 +345,8 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
   </div>
 </div>
 
-</div><!-- fin sec-camionetas -->
-
-<!-- SECCIÓN RECLAMOS -->
-<div class="seccion" id="sec-reclamos">
+<!-- PAGE: RECLAMOS -->
+<div class="page" id="page-rec">
   <!-- Sub-vistas: formulario e historial de reclamos -->
   <div id="rc-vista-form">
   <div style="padding:16px;max-width:480px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px">
@@ -392,7 +389,8 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
             <select id="rc-tipo">
               <option value="">— Tipo —</option>
               <option value="Garrafa 13 kg">Garrafa 13 kg</option>
-              <option value="Fase Líquida - Propano">Fase Líquida - Propano</option>
+              <option value="Fase Líquida">Fase Líquida</option>
+              <option value="Propano">Propano</option>
               <option value="Tubo 45 común">Tubo 45 común</option>
             </select>
           </div>
@@ -465,17 +463,75 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
   </div>
   </div><!-- fin rc-vista-form -->
 
-  <!-- HISTORIAL DE RECLAMOS -->
-  <div id="rc-vista-hist" style="display:none;padding:16px;max-width:480px;width:100%;margin:0 auto">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      <button onclick="document.getElementById('rc-vista-hist').style.display='none';document.getElementById('rc-vista-form').style.display=''" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer">← Volver</button>
-      <span style="font-weight:700;font-size:16px;color:#1e3a5f">Historial de reclamos</span>
+  <!-- HISTORIAL DE RECLAMOS con estados -->
+  <div id="rc-vista-hist" style="display:none;flex-direction:column;flex:1">
+
+    <!-- Barra superior -->
+    <div style="padding:12px 16px 0;display:flex;align-items:center;gap:8px">
+      <button onclick="volverFormReclamo()" style="background:#e8edf2;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;color:#1e3a5f">← Volver</button>
+      <span style="font-weight:700;font-size:15px;color:#1e3a5f">Historial reclamos</span>
       <button onclick="cargarHistorialReclamos()" style="margin-left:auto;background:#f0f4f8;border:none;border-radius:8px;padding:8px 12px;font-size:18px;cursor:pointer">↻</button>
     </div>
-    <div id="rc-hist-list"><div class="hist-empty">Tocá ↻ para cargar</div></div>
+
+    <!-- Selector Pendientes / Revisados -->
+    <div style="padding:10px 16px 0">
+      <div style="display:flex;gap:6px;background:#e8edf2;border-radius:12px;padding:4px">
+        <button id="rhtab-pend" onclick="cambiarEstadoHist('pend')" style="flex:1;padding:8px 4px;border:none;border-radius:9px;font-size:13px;font-weight:700;background:#e53e3e;color:#fff;cursor:pointer">⏳ Pendientes</button>
+        <button id="rhtab-rev" onclick="cambiarEstadoHist('rev')" style="flex:1;padding:8px 4px;border:none;border-radius:9px;font-size:13px;font-weight:700;background:transparent;color:#64748b;cursor:pointer">✅ Revisados</button>
+      </div>
+    </div>
+
+    <!-- Filtros Pendientes -->
+    <div id="rc-filtros-pend" style="padding:10px 16px 0">
+      <div style="display:flex;gap:8px">
+        <div style="flex:1">
+          <div style="display:flex;gap:4px;background:#f0f4f8;border-radius:8px;padding:3px">
+            <button id="rcf-hoy" onclick="cambiarFiltroRec('hoy')" style="flex:1;padding:6px 4px;border:none;border-radius:6px;font-size:12px;font-weight:700;background:#2563eb;color:#fff;cursor:pointer">Hoy</button>
+            <button id="rcf-sem" onclick="cambiarFiltroRec('sem')" style="flex:1;padding:6px 4px;border:none;border-radius:6px;font-size:12px;font-weight:700;background:transparent;color:#64748b;cursor:pointer">Semana</button>
+            <button id="rcf-tod" onclick="cambiarFiltroRec('tod')" style="flex:1;padding:6px 4px;border:none;border-radius:6px;font-size:12px;font-weight:700;background:transparent;color:#64748b;cursor:pointer">Todos</button>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div class="sel-wrap">
+            <select id="rc-f-repartidor" onchange="renderHistReclamos()">
+              <option value="">Todos</option>
+              <option>ETCHECOPAR, NATALIA</option>
+              <option>MIRANDA, MAURO</option>
+              <option>ROMAÑUK, MAURO</option>
+              <option>SILVA, OMAR</option>
+              <option>MACHIN, MARCELO</option>
+              <option>OSORES, GABRIEL</option>
+              <option>ALVAREZ, MARIO</option>
+              <option>RUIZ DIAZ, DIEGO</option>
+              <option>ARCE, DANIEL</option>
+              <option>PINTOS, JENRY</option>
+              <option>SOLLA, WALTER</option>
+              <option>FERRERO, FRANCO</option>
+              <option>DE LOS SANTOS, CARLOS</option>
+              <option>CARNEIRO, PABLO</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros Revisados -->
+    <div id="rc-filtros-rev" style="display:none;padding:10px 16px 0">
+      <div style="display:flex;gap:4px;background:#f0f4f8;border-radius:8px;padding:3px">
+        <button id="rcfr-sem" onclick="cambiarFiltroRev('sem')" style="flex:1;padding:6px 4px;border:none;border-radius:6px;font-size:12px;font-weight:700;background:#1a9e5c;color:#fff;cursor:pointer">Esta semana</button>
+        <button id="rcfr-mes" onclick="cambiarFiltroRev('mes')" style="flex:1;padding:6px 4px;border:none;border-radius:6px;font-size:12px;font-weight:700;background:transparent;color:#64748b;cursor:pointer">Este mes</button>
+        <button id="rcfr-tod" onclick="cambiarFiltroRev('tod')" style="flex:1;padding:6px 4px;border:none;border-radius:6px;font-size:12px;font-weight:700;background:transparent;color:#64748b;cursor:pointer">Todos</button>
+      </div>
+    </div>
+
+    <div id="rc-hist-list" style="padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+      <div class="hist-empty">Tocá ↻ para cargar</div>
+    </div>
   </div>
 
-</div><!-- fin sec-reclamos -->
+</div><!-- fin page-rec -->
+
+</div><!-- fin sec-camionetas -->
 
 <nav class="tabs">
   <button class="tab active" onclick="showPage('km',this)">
@@ -487,6 +543,11 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
     <div class="tab-dot tab-dot-prob"></div>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     Problema
+  </button>
+  <button class="tab" onclick="showPage('rec',this)">
+    <div class="tab-dot" style="background:#1a9e5c"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Reclamos
   </button>
   <button class="tab" onclick="showPage('hist',this)">
     <div class="tab-dot tab-dot-hist"></div>
@@ -503,9 +564,11 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww5_9dM2XcsLWs8tnLy
 // Navegación
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.classList.remove('active-prob'); });
+  document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.classList.remove('active-prob'); t.classList.remove('active-rec'); });
   document.getElementById('page-' + id).classList.add('active');
-  btn.classList.add(id === 'prob' ? 'active-prob' : 'active');
+  if (id === 'prob') btn.classList.add('active-prob');
+  else if (id === 'rec') btn.classList.add('active-rec');
+  else btn.classList.add('active');
   if (id === 'hist') {
     if (todosRegistros.length) filtrar(); else cargarHistorial();
   }
@@ -828,11 +891,78 @@ document.getElementById('rc-foto-input').addEventListener('change', function(e) 
   });
 });
 
-// RECLAMO — HISTORIAL (desde sección reclamos)
+// HISTORIAL RECLAMOS — estado y filtros
+let reclamosData = [];
+let recEstado = 'pend';   // 'pend' | 'rev'
+let recFiltroPend = 'hoy';
+let recFiltroRev = 'sem';
+
+function volverFormReclamo() {
+  document.getElementById('rc-vista-hist').style.display = 'none';
+  document.getElementById('rc-vista-form').style.display = '';
+}
+
 function mostrarHistorialReclamos() {
   document.getElementById('rc-vista-form').style.display = 'none';
-  document.getElementById('rc-vista-hist').style.display = '';
-  cargarHistorialReclamos();
+  document.getElementById('rc-vista-hist').style.display = 'flex';
+  if (reclamosData.length) renderHistReclamos();
+  else cargarHistorialReclamos();
+}
+
+function cambiarEstadoHist(estado) {
+  recEstado = estado;
+  document.getElementById('rhtab-pend').style.background = estado === 'pend' ? '#e53e3e' : 'transparent';
+  document.getElementById('rhtab-pend').style.color = estado === 'pend' ? '#fff' : '#64748b';
+  document.getElementById('rhtab-rev').style.background = estado === 'rev' ? '#1a9e5c' : 'transparent';
+  document.getElementById('rhtab-rev').style.color = estado === 'rev' ? '#fff' : '#64748b';
+  document.getElementById('rc-filtros-pend').style.display = estado === 'pend' ? '' : 'none';
+  document.getElementById('rc-filtros-rev').style.display = estado === 'rev' ? '' : 'none';
+  renderHistReclamos();
+}
+
+function cambiarFiltroRec(f) {
+  recFiltroPend = f;
+  ['hoy','sem','tod'].forEach(x => {
+    const b = document.getElementById('rcf-' + x);
+    b.style.background = x === f ? '#2563eb' : 'transparent';
+    b.style.color = x === f ? '#fff' : '#64748b';
+  });
+  renderHistReclamos();
+}
+
+function cambiarFiltroRev(f) {
+  recFiltroRev = f;
+  ['sem','mes','tod'].forEach(x => {
+    const b = document.getElementById('rcfr-' + x);
+    b.style.background = x === f ? '#1a9e5c' : 'transparent';
+    b.style.color = x === f ? '#fff' : '#64748b';
+  });
+  renderHistReclamos();
+}
+
+function parseFechaRec(fechaStr) {
+  // formato dd/MM/yyyy
+  if (!fechaStr) return null;
+  const p = fechaStr.split('/');
+  if (p.length !== 3) return null;
+  return new Date(parseInt(p[2]), parseInt(p[1]) - 1, parseInt(p[0]));
+}
+
+function enRangoFecha(fechaStr, rango) {
+  const f = parseFechaRec(fechaStr);
+  if (!f) return true;
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  if (rango === 'hoy') {
+    return f >= hoy;
+  } else if (rango === 'sem') {
+    const lunes = new Date(hoy);
+    lunes.setDate(hoy.getDate() - hoy.getDay() + (hoy.getDay() === 0 ? -6 : 1));
+    return f >= lunes;
+  } else if (rango === 'mes') {
+    const primero = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    return f >= primero;
+  }
+  return true;
 }
 
 async function cargarHistorialReclamos() {
@@ -841,54 +971,158 @@ async function cargarHistorialReclamos() {
     const res = await fetch(SCRIPT_URL + '?action=historial');
     const d = await res.json();
     if (!d.ok) throw new Error('error');
-    const listaRec = d.data.filter(r => r.tipo === 'reclamo');
-    if (!listaRec.length) { document.getElementById('rc-hist-list').innerHTML = '<div class="hist-empty">Sin reclamos registrados</div>'; return; }
-    document.getElementById('rc-hist-list').innerHTML = listaRec.slice(0, 50).map(r => `
-      <div class="hist-item" style="border-left:4px solid #1a9e5c">
+    reclamosData = d.data.filter(r => r.tipo === 'reclamo');
+    renderHistReclamos();
+  } catch(e) {
+    document.getElementById('rc-hist-list').innerHTML = '<div class="hist-empty">Sin conexión</div>';
+  }
+}
+
+function renderHistReclamos() {
+  const el = document.getElementById('rc-hist-list');
+  const repFiltro = document.getElementById('rc-f-repartidor') ? document.getElementById('rc-f-repartidor').value : '';
+
+  let lista = reclamosData.filter(r => recEstado === 'pend' ? !r.revisado : r.revisado);
+
+  // filtro fecha
+  const rango = recEstado === 'pend' ? recFiltroPend : recFiltroRev;
+  lista = lista.filter(r => enRangoFecha(r.fecha, rango));
+
+  // filtro repartidor (solo pendientes)
+  if (recEstado === 'pend' && repFiltro) {
+    lista = lista.filter(r => r.repartidor === repFiltro);
+  }
+
+  if (!lista.length) {
+    el.innerHTML = '<div class="hist-empty">Sin reclamos para este filtro</div>';
+    return;
+  }
+
+  el.innerHTML = lista.map(r => {
+    if (recEstado === 'pend') {
+      return `<div class="hist-item" style="border-left:4px solid #e53e3e;margin-bottom:10px">
         <div class="hist-meta">
-          <span class="hist-tipo" style="background:#1a9e5c20;color:#1a9e5c">📋 Reclamo</span>
+          <span class="hist-tipo" style="background:#e53e3e20;color:#e53e3e">⏳ Pendiente</span>
           <span class="hist-fecha">${r.fecha} ${r.hora}</span>
         </div>
-        <div class="hist-nombre" style="font-size:14px">${r.direccion}</div>
+        <div style="font-weight:700;font-size:14px;margin:4px 0">${r.direccion}</div>
+        <div class="hist-detalle" style="flex-wrap:wrap;gap:6px">
+          ${r.repartidor ? `<span>👤 ${r.repartidor.split(',')[0]}</span>` : ''}
+          <span>🏷️ ${r.color} · ${r.tipoEnvase}</span>
+          ${r.telefono ? `<span>📞 ${r.telefono}</span>` : ''}
+        </div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #fee2e2">
+          <div style="font-size:11px;color:#94a3b8;margin-bottom:5px">✏️ Editar datos:</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end">
+            <div><div style="font-size:10px;color:#94a3b8">Serie</div>
+              <input type="text" id="rh-serie-${r.fila}" value="${r.serie}" style="width:60px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 7px;font-size:13px"></div>
+            <div><div style="font-size:10px;color:#94a3b8">Número</div>
+              <input type="text" id="rh-nro-${r.fila}" value="${r.numero}" style="width:80px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 7px;font-size:13px"></div>
+            <div><div style="font-size:10px;color:#94a3b8">Peso total</div>
+              <input type="text" id="rh-peso-${r.fila}" value="${r.pesoTotal}" inputmode="decimal" style="width:75px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 7px;font-size:13px"></div>
+            <button onclick="guardarEdicionReclamoH(${r.fila})" style="background:#2563eb;color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">Guardar</button>
+          </div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px">Tara: ${r.tara} kg${r.pesoTotal ? ' · Peso: ' + r.pesoTotal + ' kg' : ''}</div>
+        </div>
+        <button onclick="abrirModalRevisar(${r.fila})" style="margin-top:10px;width:100%;background:#1a9e5c;color:#fff;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:700;cursor:pointer">✅ Marcar como revisado</button>
+      </div>`;
+    } else {
+      return `<div class="hist-item" style="border-left:4px solid #1a9e5c;margin-bottom:10px">
+        <div class="hist-meta">
+          <span class="hist-tipo" style="background:#1a9e5c20;color:#1a9e5c">✅ Revisado</span>
+          <span class="hist-fecha">${r.fecha} ${r.hora}</span>
+        </div>
+        <div style="font-weight:700;font-size:14px;margin:4px 0">${r.direccion}</div>
         <div class="hist-detalle" style="flex-wrap:wrap;gap:6px">
           ${r.repartidor ? `<span>👤 ${r.repartidor.split(',')[0]}</span>` : ''}
           <span>🏷️ ${r.color} · ${r.tipoEnvase}</span>
         </div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid #e8edf2">
-          <div style="font-size:12px;color:#64748b;font-weight:600;margin-bottom:6px">✏️ Editar:</div>
-          <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
-            <div style="flex:0 0 70px">
-              <div style="font-size:11px;color:#94a3b8">Serie</div>
-              <input type="text" id="rh-serie-${r.fila}" value="${r.serie}" style="width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;font-size:13px">
-            </div>
-            <div style="flex:0 0 90px">
-              <div style="font-size:11px;color:#94a3b8">Número</div>
-              <input type="text" id="rh-nro-${r.fila}" value="${r.numero}" style="width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;font-size:13px">
-            </div>
-            <div style="flex:0 0 90px">
-              <div style="font-size:11px;color:#94a3b8">Peso total (kg)</div>
-              <input type="number" id="rh-peso-${r.fila}" value="${r.pesoTotal}" step="0.01" style="width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;font-size:13px">
-            </div>
-            <button onclick="guardarEdicionReclamoH(${r.fila})" style="margin-top:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer">Guardar</button>
-          </div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:4px">Tara: ${r.tara} kg${r.pesoTotal ? ' · Peso total: ' + r.pesoTotal + ' kg' : ''}</div>
+        <div style="margin-top:6px;font-size:12px;color:#1a9e5c;font-weight:600">
+          Revisado por ${r.revisadoPor} · ${r.fechaRevisado}
         </div>
-      </div>`).join('');
-  } catch(e) { document.getElementById('rc-hist-list').innerHTML = '<div class="hist-empty">Sin conexión</div>'; }
+        ${r.serie || r.numero ? `<div style="font-size:12px;color:#64748b;margin-top:2px">Serie: ${r.serie} · Nro: ${r.numero}${r.pesoTotal ? ' · Peso: ' + r.pesoTotal + ' kg' : ''}</div>` : ''}
+      </div>`;
+    }
+  }).join('');
+}
+
+// Modal para marcar revisado
+function abrirModalRevisar(fila) {
+  // Crear modal
+  const modal = document.createElement('div');
+  modal.id = 'modal-revisar';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end';
+  modal.innerHTML = `
+    <div style="background:#fff;width:100%;border-radius:20px 20px 0 0;padding:24px 20px 36px;max-width:480px;margin:0 auto">
+      <div style="font-weight:700;font-size:16px;color:#1e3a5f;margin-bottom:16px">¿Quién revisó este reclamo?</div>
+      <div class="sel-wrap" style="margin-bottom:16px">
+        <select id="modal-quien">
+          <option value="">— Seleccioná —</option>
+          <option>ETCHECOPAR, NATALIA</option>
+          <option>MIRANDA, MAURO</option>
+          <option>ROMAÑUK, MAURO</option>
+          <option>SILVA, OMAR</option>
+          <option>MACHIN, MARCELO</option>
+          <option>OSORES, GABRIEL</option>
+          <option>ALVAREZ, MARIO</option>
+          <option>RUIZ DIAZ, DIEGO</option>
+          <option>ARCE, DANIEL</option>
+          <option>PINTOS, JENRY</option>
+          <option>SOLLA, WALTER</option>
+          <option>FERRERO, FRANCO</option>
+          <option>DE LOS SANTOS, CARLOS</option>
+          <option>CARNEIRO, PABLO</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button onclick="document.getElementById('modal-revisar').remove()" style="flex:1;background:#f0f4f8;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;color:#64748b">Cancelar</button>
+        <button onclick="confirmarRevisado(${fila})" style="flex:2;background:#1a9e5c;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;color:#fff">✅ Confirmar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function confirmarRevisado(fila) {
+  const quien = document.getElementById('modal-quien').value;
+  if (!quien) { toast('⚠️ Seleccioná quién revisó', true); return; }
+  document.getElementById('modal-revisar').remove();
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ tipo: 'marcar_revisado', fila, revisadoPor: quien })
+    });
+    const d = await res.json();
+    if (d.ok) {
+      toast('✅ Reclamo marcado como revisado');
+      // Actualizar localmente sin recargar
+      const rec = reclamosData.find(r => r.fila === fila);
+      if (rec) {
+        rec.revisado = true;
+        rec.revisadoPor = quien;
+        const ahora = new Date();
+        rec.fechaRevisado = ahora.toLocaleDateString('es-UY') + ' ' + ahora.toLocaleTimeString('es-UY', {hour:'2-digit',minute:'2-digit'});
+      }
+      renderHistReclamos();
+    } else { toast('❌ Error al guardar', true); }
+  } catch(e) { toast('❌ Sin conexión', true); }
 }
 
 async function guardarEdicionReclamoH(fila) {
   const serie     = document.getElementById('rh-serie-' + fila).value.trim();
   const numero    = document.getElementById('rh-nro-' + fila).value.trim();
-  const pesoTotal = document.getElementById('rh-peso-' + fila).value.trim();
+  const pesoTotal = document.getElementById('rh-peso-' + fila).value.trim().replace(',', '.');
   try {
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
       body: JSON.stringify({ tipo: 'editar_reclamo', fila, serie, numero, pesoTotal })
     });
     const d = await res.json();
-    if (d.ok) { toast('✅ Reclamo actualizado'); }
-    else { toast('❌ Error al guardar', true); }
+    if (d.ok) {
+      toast('✅ Reclamo actualizado');
+      const rec = reclamosData.find(r => r.fila === fila);
+      if (rec) { rec.serie = serie; rec.numero = numero; rec.pesoTotal = pesoTotal; }
+    } else { toast('❌ Error al guardar', true); }
   } catch(e) { toast('❌ Sin conexión', true); }
 }
 
