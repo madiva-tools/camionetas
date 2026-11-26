@@ -10,91 +10,115 @@
 <link rel="manifest" href="manifest.json">
 <title>MADIVA — Control Camionetas</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{font-family:system-ui,-apple-system,sans-serif;background:#0f1923;color:#fff;min-height:100vh;display:flex;flex-direction:column}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0f1923;color:#fff;min-height:100vh;display:flex;flex-direction:column;padding-bottom:70px}
 
-  header{background:#1F4E79;padding:16px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px #0005}
-  header svg{flex-shrink:0}
-  header h1{font-size:18px;font-weight:700;letter-spacing:.3px}
-  header p{font-size:12px;opacity:.7;margin-top:2px}
+/* HEADER */
+header{background:#1F4E79;padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px #0005}
+header h1{font-size:17px;font-weight:700}
+header p{font-size:11px;opacity:.65;margin-top:1px}
 
-  main{flex:1;padding:20px 16px;max-width:480px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+/* TABS */
+.tabs{position:fixed;bottom:0;left:0;right:0;background:#111d2b;border-top:1px solid #ffffff14;display:flex;z-index:20}
+.tab{flex:1;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:none;color:#5a7fa0;font-size:10px;font-weight:600;letter-spacing:.3px;transition:color .15s}
+.tab.active{color:#4a9edd}
+.tab svg{width:22px;height:22px}
 
-  .card{background:#1a2535;border-radius:14px;padding:18px;border:1px solid #ffffff12}
+/* PAGES */
+.page{display:none;padding:16px;max-width:480px;width:100%;margin:0 auto;flex-direction:column;gap:14px}
+.page.active{display:flex}
 
-  label{display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:#7eb3e0;margin-bottom:8px}
+/* CARDS */
+.card{background:#1a2535;border-radius:14px;padding:16px;border:1px solid #ffffff12}
+.card-title{font-size:13px;font-weight:700;color:#7eb3e0;margin-bottom:12px;text-transform:uppercase;letter-spacing:.6px}
 
-  input[type=text],input[type=number],textarea,select{
-    width:100%;background:#0f1923;border:1px solid #2a3f5a;border-radius:10px;
-    color:#fff;font-size:16px;padding:14px 16px;outline:none;
-    transition:border-color .2s;-webkit-appearance:none
-  }
-  input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{border-color:#4a9edd}
-  textarea{resize:none;height:80px;font-family:inherit}
-  input[type=number]::-webkit-inner-spin-button{opacity:1}
+label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#7eb3e0;margin-bottom:7px}
 
-  /* Selector de nombre */
-  .nombre-wrap{position:relative}
-  .nombre-wrap select{padding-right:40px}
-  .nombre-wrap::after{content:"▾";position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;color:#7eb3e0;font-size:14px}
+input[type=text],input[type=number],textarea,select{
+  width:100%;background:#0f1923;border:1px solid #2a3f5a;border-radius:10px;
+  color:#fff;font-size:16px;padding:12px 14px;outline:none;
+  transition:border-color .2s;-webkit-appearance:none
+}
+input:focus,textarea:focus,select:focus{border-color:#4a9edd}
+textarea{resize:none;height:76px;font-family:inherit}
 
-  /* Foto */
-  .foto-area{border:2px dashed #2a3f5a;border-radius:12px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:border-color .2s;position:relative;overflow:hidden}
-  .foto-area:active{border-color:#4a9edd}
-  .foto-area input[type=file]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
-  .foto-area svg{opacity:.4}
-  .foto-area p{font-size:14px;opacity:.5;text-align:center}
-  .foto-area img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:10px}
-  .foto-label-overlay{position:absolute;bottom:8px;right:8px;background:#1F4E79cc;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600}
+.sel-wrap{position:relative}
+.sel-wrap select{padding-right:36px}
+.sel-wrap::after{content:"▾";position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:#7eb3e0;font-size:13px}
 
-  /* Combustible */
-  .combustible-wrap{display:flex;flex-direction:column;gap:8px}
-  .combustible-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(to right,#4a9edd var(--pct,50%),#2a3f5a var(--pct,50%));outline:none;cursor:pointer}
-  .combustible-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#4a9edd;border:3px solid #0f1923;box-shadow:0 0 0 2px #4a9edd}
-  .combustible-val{text-align:center;font-size:22px;font-weight:700;color:#4a9edd}
+/* KM */
+input.km{font-size:22px;font-weight:700;text-align:center;letter-spacing:1px}
 
-  /* Matricula */
-  input.matricula{text-transform:uppercase;letter-spacing:2px;font-weight:700;font-size:20px;text-align:center}
+/* Combustible */
+.comb-wrap{display:flex;flex-direction:column;gap:7px}
+.comb-val{text-align:center;font-size:22px;font-weight:700;color:#4a9edd}
+.comb-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(to right,#4a9edd var(--pct,50%),#2a3f5a var(--pct,50%));outline:none;cursor:pointer}
+.comb-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#4a9edd;border:3px solid #0f1923;box-shadow:0 0 0 2px #4a9edd}
 
-  /* KM */
-  input.km{font-size:22px;font-weight:700;text-align:center;letter-spacing:1px}
+/* Fotos */
+.fotos-grid{display:grid;gap:10px}
+.fotos-grid.one{grid-template-columns:1fr}
+.fotos-grid.three{grid-template-columns:repeat(3,1fr)}
+.foto-slot{border:2px dashed #2a3f5a;border-radius:10px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;position:relative;overflow:hidden;transition:border-color .2s}
+.foto-slot.one{min-height:160px}
+.foto-slot input[type=file]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.foto-slot svg{opacity:.35;width:28px;height:28px}
+.foto-slot p{font-size:11px;opacity:.4;text-align:center;line-height:1.3}
+.foto-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.foto-badge{position:absolute;bottom:4px;right:4px;background:#1F4E79cc;border-radius:5px;padding:2px 6px;font-size:10px;font-weight:700}
 
-  /* Botón */
-  .btn-send{background:#1F4E79;border:none;color:#fff;width:100%;padding:18px;border-radius:14px;font-size:17px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:10px}
-  .btn-send:active{background:#174069}
-  .btn-send.loading{opacity:.6;pointer-events:none}
+/* Botón */
+.btn{background:#1F4E79;border:none;color:#fff;width:100%;padding:16px;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s}
+.btn:active{background:#174069}
+.btn.loading{opacity:.6;pointer-events:none}
+.btn.danger{background:#8b2020}
 
-  /* Toast */
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#27ae60;color:#fff;padding:14px 24px;border-radius:12px;font-weight:600;font-size:15px;transition:transform .3s;white-space:nowrap;z-index:100;box-shadow:0 4px 20px #0008}
-  .toast.show{transform:translateX(-50%) translateY(0)}
-  .toast.error{background:#c0392b}
+.required{color:#e74c3c;margin-left:2px}
+.opt{opacity:.45;font-size:9px;text-transform:none;letter-spacing:0;margin-left:4px}
 
-  .required-mark{color:#e74c3c;margin-left:3px}
+/* HISTORIAL */
+.filtros{display:flex;gap:8px}
+.filtros select{flex:1;font-size:13px;padding:10px 12px}
+.btn-refresh{background:#1a2535;border:1px solid #2a3f5a;color:#7eb3e0;border-radius:10px;padding:10px 14px;font-size:13px;cursor:pointer;white-space:nowrap}
+
+.hist-list{display:flex;flex-direction:column;gap:10px}
+.hist-item{background:#1a2535;border-radius:12px;padding:14px;border:1px solid #ffffff12;border-left:3px solid #1F4E79}
+.hist-item.problema{border-left-color:#c0392b}
+.hist-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.hist-tipo{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 7px;border-radius:4px;background:#1F4E790;color:#4a9edd}
+.hist-tipo.p{color:#e74c3c}
+.hist-fecha{font-size:11px;color:#5a7fa0}
+.hist-nombre{font-size:14px;font-weight:700;margin-bottom:2px}
+.hist-detalle{font-size:12px;color:#7eb3e0;display:flex;gap:12px;flex-wrap:wrap}
+.hist-obs{font-size:12px;color:#a0b8cc;margin-top:5px;font-style:italic}
+.hist-empty{text-align:center;padding:40px 20px;color:#3a5a7a;font-size:14px}
+
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:#27ae60;color:#fff;padding:12px 22px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .3s;z-index:100;box-shadow:0 4px 20px #0008;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.err{background:#c0392b}
 </style>
 </head>
 <body>
 
 <header>
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
     <rect width="32" height="32" rx="8" fill="#ffffff18"/>
     <path d="M4 20h24M6 20l2-8h16l2 8" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <circle cx="10" cy="22" r="2" fill="#fff"/>
     <circle cx="22" cy="22" r="2" fill="#fff"/>
     <path d="M12 12h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
   </svg>
-  <div>
-    <h1>Control Camionetas</h1>
-    <p>MADIVA S.R.L.</p>
-  </div>
+  <div><h1>Control Camionetas</h1><p>MADIVA S.R.L.</p></div>
 </header>
 
-<main>
+<!-- PAGE: KM -->
+<div class="page active" id="page-km">
 
-  <!-- Nombre -->
   <div class="card">
-    <label>Nombre del repartidor <span class="required-mark">*</span></label>
-    <div class="nombre-wrap">
-      <select id="nombre" onchange="actualizarMatricula(this.value)">
+    <label>Nombre <span class="required">*</span></label>
+    <div class="sel-wrap">
+      <select id="km-nombre">
         <option value="">— Seleccioná tu nombre —</option>
         <option>ETCHECOPAR SANUTTO, NATALIA</option>
         <option>MIRANDA, MAURO</option>
@@ -114,11 +138,10 @@
     </div>
   </div>
 
-  <!-- Matrícula -->
   <div class="card">
-    <label>Matrícula <span class="required-mark">*</span></label>
-    <div class="nombre-wrap">
-      <select id="matricula" class="matricula">
+    <label>Matrícula <span class="required">*</span></label>
+    <div class="sel-wrap">
+      <select id="km-matricula">
         <option value="">— Seleccioná la matrícula —</option>
         <option>IAE4831</option>
         <option>IAG4759</option>
@@ -132,198 +155,370 @@
     </div>
   </div>
 
-  <!-- KM -->
   <div class="card">
-    <label>Kilometraje <span class="required-mark">*</span></label>
-    <input type="number" id="km" class="km" placeholder="00000" inputmode="numeric" min="0">
+    <label>Kilometraje <span class="required">*</span></label>
+    <input type="number" id="km-km" class="km" placeholder="00000" inputmode="numeric" min="0">
   </div>
 
-  <!-- Combustible -->
   <div class="card">
-    <label>Nivel de combustible</label>
-    <div class="combustible-wrap">
-      <div class="combustible-val"><span id="combVal">50</span>%</div>
-      <input type="range" class="combustible-slider" id="combustible" min="0" max="100" step="5" value="50" style="--pct:50%">
+    <label>Combustible</label>
+    <div class="comb-wrap">
+      <div class="comb-val"><span id="km-combval">50</span>%</div>
+      <input type="range" class="comb-slider" id="km-comb" min="0" max="100" step="5" value="50" style="--pct:50%">
     </div>
   </div>
 
-  <!-- Foto tablero -->
   <div class="card">
-    <label>Foto del tablero <span class="required-mark">*</span></label>
-    <div class="foto-area" id="fotoArea">
-      <input type="file" id="fotoInput" accept="image/*" capture="environment">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
-        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-        <circle cx="12" cy="13" r="4"/>
-      </svg>
-      <p>Tocá para sacar foto<br>del tablero</p>
+    <label>Foto del tablero <span class="required">*</span></label>
+    <div class="fotos-grid one">
+      <div class="foto-slot one" id="km-foto-slot">
+        <input type="file" id="km-foto-input" accept="image/*" capture="environment">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+        <p>Tocá para sacar<br>foto del tablero</p>
+      </div>
     </div>
   </div>
 
-  <!-- Observaciones -->
   <div class="card">
-    <label>Observaciones <span style="opacity:.5;font-size:10px;text-transform:none;letter-spacing:0">(opcional)</span></label>
-    <textarea id="observaciones" placeholder="Alguna novedad, desperfecto, etc."></textarea>
+    <label>Observaciones <span class="opt">(opcional)</span></label>
+    <textarea id="km-obs" placeholder="Novedades, estado del vehículo, etc."></textarea>
   </div>
 
-  <!-- Botón -->
-  <button class="btn-send" id="btnSend" onclick="enviar()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-    </svg>
-    Enviar reporte
+  <button class="btn" id="km-btn" onclick="enviarKm()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    Enviar reporte de km
   </button>
+</div>
 
-</main>
+<!-- PAGE: PROBLEMA -->
+<div class="page" id="page-prob">
+
+  <div class="card">
+    <label>Nombre <span class="required">*</span></label>
+    <div class="sel-wrap">
+      <select id="pr-nombre">
+        <option value="">— Seleccioná tu nombre —</option>
+        <option>ETCHECOPAR SANUTTO, NATALIA</option>
+        <option>MIRANDA, MAURO</option>
+        <option>ROMAÑUK GARCIA, MAURO</option>
+        <option>SILVA, OMAR ISMAEL</option>
+        <option>MACHIN GOMEZ, MARCELO</option>
+        <option>OSORES MARSICO, GERARDO</option>
+        <option>ALVAREZ CAMACHO, MARIO</option>
+        <option>RUIZ DIAZ, DIEGO</option>
+        <option>ARCE SARACHO, ROBERT</option>
+        <option>PINTOS HIDALGO, JENRY</option>
+        <option>SOLLA FUTTEN, WALTER</option>
+        <option>FERRERO MALGOR, FRANCO</option>
+        <option>DE LOS SANTOS, CARLOS</option>
+        <option>CARNEIRO RODRIGUEZ, PABLO</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Matrícula <span class="required">*</span></label>
+    <div class="sel-wrap">
+      <select id="pr-matricula">
+        <option value="">— Seleccioná la matrícula —</option>
+        <option>IAE4831</option>
+        <option>IAG4759</option>
+        <option>IAG4610</option>
+        <option>IAF9186</option>
+        <option>IAE4832</option>
+        <option>IAH7032</option>
+        <option>IAH7082</option>
+        <option>IAG8857</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Descripción del problema <span class="required">*</span></label>
+    <textarea id="pr-obs" placeholder="Describí el problema con detalle..." style="height:100px"></textarea>
+  </div>
+
+  <div class="card">
+    <label>Fotos <span class="opt">(hasta 3, opcional)</span></label>
+    <div class="fotos-grid three">
+      <div class="foto-slot" id="pr-slot-0">
+        <input type="file" accept="image/*" capture="environment" onchange="cargarFotoProb(this,0)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <p>Foto 1</p>
+      </div>
+      <div class="foto-slot" id="pr-slot-1">
+        <input type="file" accept="image/*" capture="environment" onchange="cargarFotoProb(this,1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <p>Foto 2</p>
+      </div>
+      <div class="foto-slot" id="pr-slot-2">
+        <input type="file" accept="image/*" capture="environment" onchange="cargarFotoProb(this,2)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <p>Foto 3</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn danger" id="pr-btn" onclick="enviarProblema()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Reportar problema
+  </button>
+</div>
+
+<!-- PAGE: HISTORIAL -->
+<div class="page" id="page-hist">
+  <div class="card">
+    <div class="filtros">
+      <div class="sel-wrap" style="flex:1">
+        <select id="f-chofer" onchange="filtrar()">
+          <option value="">Todos los choferes</option>
+          <option>ETCHECOPAR SANUTTO, NATALIA</option>
+          <option>MIRANDA, MAURO</option>
+          <option>ROMAÑUK GARCIA, MAURO</option>
+          <option>SILVA, OMAR ISMAEL</option>
+          <option>MACHIN GOMEZ, MARCELO</option>
+          <option>OSORES MARSICO, GERARDO</option>
+          <option>ALVAREZ CAMACHO, MARIO</option>
+          <option>RUIZ DIAZ, DIEGO</option>
+          <option>ARCE SARACHO, ROBERT</option>
+          <option>PINTOS HIDALGO, JENRY</option>
+          <option>SOLLA FUTTEN, WALTER</option>
+          <option>FERRERO MALGOR, FRANCO</option>
+          <option>DE LOS SANTOS, CARLOS</option>
+          <option>CARNEIRO RODRIGUEZ, PABLO</option>
+        </select>
+      </div>
+      <div class="sel-wrap" style="flex:1">
+        <select id="f-mat" onchange="filtrar()">
+          <option value="">Todas las matrículas</option>
+          <option>IAE4831</option>
+          <option>IAG4759</option>
+          <option>IAG4610</option>
+          <option>IAF9186</option>
+          <option>IAE4832</option>
+          <option>IAH7032</option>
+          <option>IAH7082</option>
+          <option>IAG8857</option>
+        </select>
+      </div>
+      <button class="btn-refresh" onclick="cargarHistorial()">↻</button>
+    </div>
+  </div>
+
+  <div class="hist-list" id="hist-list">
+    <div class="hist-empty">Tocá ↻ para cargar el historial</div>
+  </div>
+</div>
+
+<nav class="tabs">
+  <button class="tab active" onclick="showPage('km',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    KM
+  </button>
+  <button class="tab" onclick="showPage('prob',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Problema
+  </button>
+  <button class="tab" onclick="showPage('hist',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    Historial
+  </button>
+</nav>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// URL del Web App de Google Apps Script — completar después de publicar
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww5_9dM2XcsLWs8tnLychdUQbYr75RtcUwUS6LLNc9cEYnW15zKVMzinXyOfyQPqTTZQ/exec";
 
-// (sin función actualizarMatricula — matrícula se elige independiente)
-function actualizarMatricula(nombre) {
-  // reservado para asignación futura si cada repartidor tiene camioneta fija
+// Navegación
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'hist') cargarHistorial();
+}
+
+// Toast
+function toast(msg, err) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (err ? ' err' : '') + ' show';
+  setTimeout(() => t.className = 'toast' + (err ? ' err' : ''), 3000);
 }
 
 // Combustible slider
-const slider = document.getElementById("combustible");
-const combVal = document.getElementById("combVal");
-slider.addEventListener("input", function() {
-  combVal.textContent = this.value;
-  this.style.setProperty("--pct", this.value + "%");
+const sliderKm = document.getElementById('km-comb');
+const valKm = document.getElementById('km-combval');
+sliderKm.addEventListener('input', function() {
+  valKm.textContent = this.value;
+  this.style.setProperty('--pct', this.value + '%');
 });
 
-// Foto preview
-let fotoBase64 = null;
-document.getElementById("fotoInput").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+// Foto KM
+let fotoKm = null;
+document.getElementById('km-foto-input').addEventListener('change', function(e) {
+  comprimirFoto(e.target.files[0], 800, function(b64) {
+    fotoKm = b64;
+    const slot = document.getElementById('km-foto-slot');
+    slot.innerHTML = `<img src="${b64}"><span class="foto-badge">📷</span>`;
+  });
+});
 
-  // Comprimir antes de enviar (máx 800px, calidad 70%)
+// Fotos Problema
+let fotosProb = [null, null, null];
+function cargarFotoProb(input, idx) {
+  comprimirFoto(input.files[0], 600, function(b64) {
+    fotosProb[idx] = b64;
+    const slot = document.getElementById('pr-slot-' + idx);
+    slot.innerHTML = `<img src="${b64}"><span class="foto-badge">📷</span>`;
+  });
+}
+
+// Comprimir foto
+function comprimirFoto(file, maxPx, cb) {
+  if (!file) return;
   const reader = new FileReader();
   reader.onload = function(ev) {
     const img = new Image();
     img.onload = function() {
-      const canvas = document.createElement("canvas");
-      const MAX = 800;
+      const canvas = document.createElement('canvas');
       let w = img.width, h = img.height;
-      if (w > h && w > MAX) { h = h * MAX / w; w = MAX; }
-      else if (h > MAX) { w = w * MAX / h; h = MAX; }
+      if (w > h && w > maxPx) { h = h * maxPx / w; w = maxPx; }
+      else if (h > maxPx) { w = w * maxPx / h; h = maxPx; }
       canvas.width = w; canvas.height = h;
-      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-      fotoBase64 = canvas.toDataURL("image/jpeg", 0.7);
-
-      // Preview
-      const area = document.getElementById("fotoArea");
-      area.innerHTML = `<img src="${fotoBase64}"><span class="foto-label-overlay">📷 Foto cargada</span>`;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(canvas.toDataURL('image/jpeg', 0.7));
     };
     img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
-});
-
-// (matrícula ahora es select, no necesita uppercase listener)
-
-// Toast
-function showToast(msg, error) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast" + (error ? " error" : "") + " show";
-  setTimeout(() => t.className = "toast" + (error ? " error" : ""), 3000);
 }
 
-// Enviar
-async function enviar() {
-  const nombre = document.getElementById("nombre").value.trim();
-  const matricula = document.getElementById("matricula").value.trim();
-  const km = document.getElementById("km").value.trim();
-  const combustible = document.getElementById("combustible").value;
-  const observaciones = document.getElementById("observaciones").value.trim();
+// Enviar KM
+async function enviarKm() {
+  const nombre = document.getElementById('km-nombre').value;
+  const matricula = document.getElementById('km-matricula').value;
+  const km = document.getElementById('km-km').value;
+  const combustible = document.getElementById('km-comb').value;
+  const obs = document.getElementById('km-obs').value;
 
-  if (!nombre) { showToast("⚠️ Seleccioná tu nombre", true); return; }
-  if (!matricula) { showToast("⚠️ Ingresá la matrícula", true); return; }
-  if (!km) { showToast("⚠️ Ingresá el kilometraje", true); return; }
-  if (!fotoBase64) { showToast("⚠️ Sacá la foto del tablero", true); return; }
+  if (!nombre) { toast('⚠️ Seleccioná tu nombre', true); return; }
+  if (!matricula) { toast('⚠️ Seleccioná la matrícula', true); return; }
+  if (!km) { toast('⚠️ Ingresá el kilometraje', true); return; }
+  if (!fotoKm) { toast('⚠️ Sacá la foto del tablero', true); return; }
 
-  const btn = document.getElementById("btnSend");
-  btn.classList.add("loading");
-  btn.textContent = "Enviando...";
+  const btn = document.getElementById('km-btn');
+  btn.classList.add('loading'); btn.textContent = 'Enviando...';
 
   try {
-    const payload = { nombre, matricula, km, combustible, observaciones, foto: fotoBase64 };
-
     const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify(payload)
+      method: 'POST',
+      body: JSON.stringify({ tipo: 'km', nombre, matricula, km, combustible, observaciones: obs, foto: fotoKm })
     });
-    const data = await res.json();
+    const d = await res.json();
+    if (d.ok) {
+      toast('✅ Reporte de km enviado');
+      document.getElementById('km-nombre').value = '';
+      document.getElementById('km-matricula').value = '';
+      document.getElementById('km-km').value = '';
+      document.getElementById('km-obs').value = '';
+      sliderKm.value = 50; valKm.textContent = '50'; sliderKm.style.setProperty('--pct','50%');
+      fotoKm = null;
+      document.getElementById('km-foto-slot').innerHTML = `<input type="file" id="km-foto-input" accept="image/*" capture="environment"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><p>Tocá para sacar<br>foto del tablero</p>`;
+      document.getElementById('km-foto-input').addEventListener('change', function(e){ comprimirFoto(e.target.files[0],800,function(b64){fotoKm=b64;const s=document.getElementById('km-foto-slot');s.innerHTML=`<img src="${b64}"><span class="foto-badge">📷</span>`;}); });
+    } else { toast('❌ Error al enviar', true); }
+  } catch(e) { toast('❌ Sin conexión', true); }
 
-    if (data.ok) {
-      showToast("✅ Reporte enviado correctamente");
-      // Limpiar formulario
-      document.getElementById("nombre").value = "";
-      document.getElementById("matricula").value = "";
-      document.getElementById("km").value = "";
-      document.getElementById("combustible").value = 50;
-      slider.style.setProperty("--pct", "50%");
-      combVal.textContent = "50";
-      document.getElementById("observaciones").value = "";
-      fotoBase64 = null;
-      document.getElementById("fotoArea").innerHTML = `
-        <input type="file" id="fotoInput" accept="image/*" capture="environment">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-          <circle cx="12" cy="13" r="4"/>
-        </svg>
-        <p>Tocá para sacar foto<br>del tablero</p>`;
-      document.getElementById("fotoInput").addEventListener("change", arguments.callee);
-      // Re-attach listener
-      attachFotoListener();
+  btn.classList.remove('loading');
+  btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar reporte de km';
+}
+
+// Enviar Problema
+async function enviarProblema() {
+  const nombre = document.getElementById('pr-nombre').value;
+  const matricula = document.getElementById('pr-matricula').value;
+  const obs = document.getElementById('pr-obs').value.trim();
+
+  if (!nombre) { toast('⚠️ Seleccioná tu nombre', true); return; }
+  if (!matricula) { toast('⚠️ Seleccioná la matrícula', true); return; }
+  if (!obs) { toast('⚠️ Describí el problema', true); return; }
+
+  const btn = document.getElementById('pr-btn');
+  btn.classList.add('loading'); btn.textContent = 'Enviando...';
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ tipo: 'problema', nombre, matricula, observaciones: obs, foto1: fotosProb[0], foto2: fotosProb[1], foto3: fotosProb[2] })
+    });
+    const d = await res.json();
+    if (d.ok) {
+      toast('✅ Problema reportado');
+      document.getElementById('pr-nombre').value = '';
+      document.getElementById('pr-matricula').value = '';
+      document.getElementById('pr-obs').value = '';
+      fotosProb = [null,null,null];
+      [0,1,2].forEach(i => {
+        document.getElementById('pr-slot-'+i).innerHTML = `<input type="file" accept="image/*" capture="environment" onchange="cargarFotoProb(this,${i})"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><p>Foto ${i+1}</p>`;
+      });
+    } else { toast('❌ Error al enviar', true); }
+  } catch(e) { toast('❌ Sin conexión', true); }
+
+  btn.classList.remove('loading');
+  btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Reportar problema';
+}
+
+// HISTORIAL
+let todosRegistros = [];
+
+async function cargarHistorial() {
+  document.getElementById('hist-list').innerHTML = '<div class="hist-empty">Cargando...</div>';
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=historial');
+    const d = await res.json();
+    if (d.ok) {
+      todosRegistros = d.data;
+      filtrar();
     } else {
-      showToast("❌ Error al enviar. Intentá de nuevo.", true);
+      document.getElementById('hist-list').innerHTML = '<div class="hist-empty">Error al cargar datos</div>';
     }
-  } catch(err) {
-    showToast("❌ Sin conexión. Intentá de nuevo.", true);
+  } catch(e) {
+    document.getElementById('hist-list').innerHTML = '<div class="hist-empty">Sin conexión</div>';
   }
-
-  btn.classList.remove("loading");
-  btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar reporte`;
 }
 
-function attachFotoListener() {
-  const fi = document.getElementById("fotoInput");
-  if (fi) fi.addEventListener("change", function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      const img = new Image();
-      img.onload = function() {
-        const canvas = document.createElement("canvas");
-        const MAX = 800;
-        let w = img.width, h = img.height;
-        if (w > h && w > MAX) { h = h * MAX / w; w = MAX; }
-        else if (h > MAX) { w = w * MAX / h; h = MAX; }
-        canvas.width = w; canvas.height = h;
-        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-        fotoBase64 = canvas.toDataURL("image/jpeg", 0.7);
-        const area = document.getElementById("fotoArea");
-        area.innerHTML = `<img src="${fotoBase64}"><span class="foto-label-overlay">📷 Foto cargada</span>`;
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
+function filtrar() {
+  const chofer = document.getElementById('f-chofer').value;
+  const mat = document.getElementById('f-mat').value;
+  let lista = todosRegistros;
+  if (chofer) lista = lista.filter(r => r.nombre === chofer);
+  if (mat) lista = lista.filter(r => r.matricula === mat);
+
+  const el = document.getElementById('hist-list');
+  if (!lista.length) { el.innerHTML = '<div class="hist-empty">Sin registros para ese filtro</div>'; return; }
+
+  el.innerHTML = lista.slice(0,50).map(r => {
+    const esProb = r.tipo === 'problema';
+    return `<div class="hist-item ${esProb ? 'problema' : ''}">
+      <div class="hist-meta">
+        <span class="hist-tipo ${esProb ? 'p' : ''}">${esProb ? '⚠️ Problema' : '🚛 KM'}</span>
+        <span class="hist-fecha">${r.fecha} ${r.hora}</span>
+      </div>
+      <div class="hist-nombre">${r.nombre}</div>
+      <div class="hist-detalle">
+        <span>🚗 ${r.matricula}</span>
+        ${!esProb ? `<span>📍 ${r.km} km</span><span>⛽ ${r.combustible}%</span>` : ''}
+      </div>
+      ${r.observaciones ? `<div class="hist-obs">${r.observaciones}</div>` : ''}
+    </div>`;
+  }).join('');
 }
 </script>
 
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").catch(() => {});
-}
-</script>
-
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
 </body>
 </html>
