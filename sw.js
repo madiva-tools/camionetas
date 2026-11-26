@@ -1,5 +1,5 @@
-// Service Worker — MADIVA Control Camionetas
-const CACHE = "madiva-cam-v1";
+// Service Worker — MADIVA Control Camionetas v2
+const CACHE = "madiva-cam-v2";
 const ASSETS = ["./index.html", "./manifest.json"];
 
 self.addEventListener("install", e => {
@@ -15,8 +15,7 @@ self.addEventListener("activate", e => {
 });
 
 self.addEventListener("fetch", e => {
-  // Para el POST al script no cachear nada
-  if (e.request.method === "POST") return;
+  if (e.request.method === "POST" || e.request.url.includes("script.google.com")) return;
   e.respondWith(
     fetch(e.request).catch(() => caches.match(e.request))
   );
