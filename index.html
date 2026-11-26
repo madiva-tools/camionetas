@@ -24,6 +24,11 @@ header p{font-size:11px;color:rgba(255,255,255,.65);margin-top:1px}
 .tab.active{color:#1A5FA8}
 .tab.active-prob{color:#d9534f}
 .tab svg{width:22px;height:22px}
+.tab-icon{position:relative;display:flex;align-items:center;justify-content:center}
+.tab-dot{width:28px;height:4px;border-radius:2px;margin-bottom:1px;background:transparent;transition:background .2s}
+.tab.active .tab-dot-km{background:#1a9e5c}
+.tab.active-prob .tab-dot-prob{background:#d9534f}
+.tab.active .tab-dot-hist{background:#1A5FA8}
 
 /* PAGES */
 .page{display:none;padding:16px;max-width:480px;width:100%;margin:0 auto;flex-direction:column;gap:12px}
@@ -318,14 +323,17 @@ input.km{font-size:26px;font-weight:700;text-align:center;letter-spacing:1px;col
 
 <nav class="tabs">
   <button class="tab active" onclick="showPage('km',this)">
+    <div class="tab-dot tab-dot-km"></div>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     KM
   </button>
   <button class="tab" onclick="showPage('prob',this)">
+    <div class="tab-dot tab-dot-prob"></div>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     Problema
   </button>
   <button class="tab" onclick="showPage('hist',this)">
+    <div class="tab-dot tab-dot-hist"></div>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
     Historial
   </button>
